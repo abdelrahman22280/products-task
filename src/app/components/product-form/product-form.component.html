@@ -1,0 +1,133 @@
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6">
+
+            <!-- select product dropdown strat -->
+            <p-dropdown styleClass="w-100" (onChange)="onSelectProduct()" (onClear) = "reset()" [options]="products"
+                [(ngModel)]="selectedProduct" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true"
+                placeholder="Select or add a new product">
+                <ng-template pTemplate="header">
+                    <div class="country-item country-item-value">
+                        <a class="btn w-100 text-start" (click)="addNewProduct()">
+                            <i class="pi pi-plus"></i>
+                            Add New Product
+                        </a>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="selectedItem">
+                    <div class="country-item country-item-value" *ngIf="selectedProduct">
+                        <div>{{selectedProduct.name}}</div>
+                    </div>
+                </ng-template>
+                <ng-template let-product pTemplate="item">
+                    <div class="country-item">
+                        <div>{{product.name}}</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+            <!-- select product dropdown end -->
+
+            <!-- form start -->
+            <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="row g-3 my-5" *ngIf="showProductForm">
+
+                <div class="col-12">
+                    <label for="productName" class="form-label">Product Name</label>
+                    <input placeholder="Product Name" formControlName="name" type="text" class="form-control" id="productName">
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Product Type</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label custom-control-label" for="productType1">Type 1 </label>
+                            <input class="form-check-input custom-control-input" type="radio" formControlName="type" id="productType1" value="type1">
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label" for="productType2">Type 2</label>
+                            <input class="form-check-input" type="radio" formControlName="type" id="productType2" value="type2">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label for="productCategory" class="form-label">Product Category</label>
+                    <input placeholder="Product Category" formControlName="category" type="text" class="form-control" id="productCategory">
+                </div>
+
+                <div class="col-12">
+                    <div class="form-check">
+                        <input class="form-check-input" formControlName="isSubCategory" type="checkbox" value="" id="isSubCategory">
+                        <label class="form-check-label" for="isSubCategory">
+                            This is a sub-category
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="referenceID" class="form-label">Reference ID <span class="text-muted">(Optional)</span></label>
+                    <input placeholder="Reference ID" formControlName="referenceID" type="number" class="form-control" id="referenceID">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="password" class="form-label">Password</label>
+                    <input placeholder="Password" formControlName="password" type="password" class="form-control" id="password">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="deliveryFees" class="form-label">Delivery Fees</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="deliveryFees">EGP</span>
+                        <input placeholder="Delivery Fees" formControlName="deliveryFees" type="number" class="form-control" placeholder="Delivery Fees" aria-label="Delivery Fees" aria-describedby="deliveryFees">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="deliveryFeesPrecentage" class="form-label">Delivery Fees</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="deliveryFeesPrecentage">%</span>
+                        <input placeholder="Delivery Fees" formControlName="deliveryFeesPrecentage" type="number" class="form-control" placeholder="Delivery Fees" aria-label="Delivery Fees" aria-describedby="deliveryFeesPrecentage">
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <button class="btn text-danger ps-0" type="button" (click)="onDelete()" *ngIf="inUpdateMode" >Delete</button>
+                </div>
+
+                <div class="col-6 text-end">
+                    <button class="btn" type="button" (click)="reset()" >Cancel</button>
+                    <button class="btn btn-success px-4"  type="submit" [disabled]="!productForm.valid">Save</button>
+                </div>
+
+            </form>
+            <!-- form end -->
+
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Dialog -->
+<p-confirmDialog key="confirmDialog" #confirmDialog [style]="{width: '95vw', maxWidth: '507px'}">
+    <ng-template pTemplate="footer">
+        <button type="button" class="btn" label="Discard" (click)="confirmDialog.reject()">Discard</button>
+        <button type="button" class="btn btn-success px-4" label="Save" (click)="confirmDialog.accept()">Save</button>
+    </ng-template>
+</p-confirmDialog>
+
+<!-- Delete Dialog -->
+<p-confirmDialog key="deleteDialog" #deleteDialog [style]="{width: '95vw', maxWidth: '507px'}">
+    <ng-template pTemplate="footer">
+        <button type="button" class="btn" label="Discard" (click)="deleteDialog.reject()">Discard</button>
+        <button type="button" class="btn btn-danger px-4" label="Delete" (click)="deleteDialog.accept()">Delete</button>
+    </ng-template>
+</p-confirmDialog>
+
+<!-- Toast -->
+<p-toast styleClass="custom-toast" position="top-right" [breakpoints]="{'767px':{top:'unset' , bottom: '0px'}}" [style]="{width: '85vw', maxWidth: '450px'}" >
+    <ng-template let-message pTemplate="message">
+        <div class="flex flex-column justify-content-center align-items-center my-auto" style="flex: 1">
+            <div>
+                <p class="mb-0 text-success"><i class="pi pi-check-circle"></i> &nbsp; &nbsp;{{message.summary}}</p>
+            </div>
+        </div>
+    </ng-template>
+</p-toast>
